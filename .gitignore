@@ -27,3 +27,5 @@ Thumbs.db
 # Local dev artifacts
 .shots/
 .playwright-mcp/
+
+.vercel

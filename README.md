@@ -1,60 +1,103 @@
+<div align="center">
+
 # Healthcare GraphRAG
 
-**Patient Progress & Bottleneck Intelligence** — a graph-augmented retrieval
-system that answers care-team questions over patient records and shows the exact
-evidence behind every answer.
+### Patient Progress &amp; Bottleneck Intelligence
 
-It builds a knowledge graph from clinical tables (patients, goals, barriers,
-interventions, notes, incidents, medications…), retrieves the most relevant
-document chunks for a question, and produces a grounded, structured answer with
-an **answer-traceability graph** so reviewers can see *why* the system said what
-it said.
+**A graph-augmented retrieval system that answers care-team questions over patient
+records — and shows the exact evidence behind every answer.**
 
-> ⚠️ **All data is synthetic and for demonstration only. This is decision-support
+[![Live Demo](https://img.shields.io/badge/demo-live-2dd4bf?style=for-the-badge&logo=vercel&logoColor=white)](https://healthcare-graphrag.vercel.app)
+
+[![CI](https://github.com/VikramKavuri/healthcare-graphrag/actions/workflows/ci.yml/badge.svg)](https://github.com/VikramKavuri/healthcare-graphrag/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](pyproject.toml)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Groq](https://img.shields.io/badge/LLM-Groq-f55036?style=flat-square)](https://groq.com)
+[![Deployed on Vercel](https://img.shields.io/badge/Vercel-000?style=flat-square&logo=vercel)](https://healthcare-graphrag.vercel.app)
+
+[**Live demo**](https://healthcare-graphrag.vercel.app) · [Features](#-features) · [Architecture](#-architecture) · [Quickstart](#-quickstart) · [API](#-api) · [Deploy](#-deploy-your-own)
+
+<img src="assets/knowledge-graph.svg" alt="Patient-centered knowledge graph linking goals, barriers, interventions, incidents, notes, and medications" width="100%">
+
+</div>
+
+> [!WARNING]
+> **All data is synthetic and for demonstration only. This is decision-support
 > tooling, not medical advice.**
 
-<p align="center">
-  <img src="assets/knowledge-graph.svg" alt="Patient-centered knowledge graph linking goals, barriers, interventions, incidents, notes, and medications" width="100%">
-</p>
+---
+
+## ▸ Overview
+
+Healthcare GraphRAG builds a **knowledge graph** from clinical tables (patients,
+goals, barriers, interventions, notes, incidents, medications…), retrieves the
+most relevant document chunks for a question, and produces a grounded, structured
+answer with an **answer-traceability graph** so reviewers can see *why* the system
+said what it said.
+
+It runs as a single FastAPI serverless function plus a static single-page app —
+no database and no model server — and degrades gracefully to a deterministic
+extractive engine when no LLM is configured, so the demo never breaks.
+
+<div align="center">
+  <a href="https://healthcare-graphrag.vercel.app">
+    <img src="assets/screenshot.png" alt="Healthcare GraphRAG answering a question with a grounded answer, an answer-traceability graph, and a retrieved-evidence table" width="92%">
+  </a>
+  <br><em>A grounded answer, its traceability graph, and the retrieved evidence — live at
+  <a href="https://healthcare-graphrag.vercel.app">healthcare-graphrag.vercel.app</a></em>
+</div>
 
 ---
 
-## Highlights
+## Table of contents
 
-- **Graph + retrieval, combined.** A NetworkX knowledge graph supplies
-  structured relationships; a TF-IDF retriever supplies the relevant evidence
-  text. Both feed the answer.
-- **Answer traceability.** Every answer ships with the subgraph of evidence used
-  to ground it, plus the retrieved chunks and their similarity scores.
-- **Works with or without an LLM.** With a `GROQ_API_KEY`, answers are generated
-  by a Groq-hosted model. Without one — or if the call fails — a deterministic
-  extractive engine produces a grounded answer, so the demo never breaks.
-- **Vercel-native.** A lean FastAPI serverless function plus a static
-  single-page frontend. No database, no model server, fast cold starts.
-- **Zero heavy runtime deps.** Data is loaded from a committed JSON snapshot and
-  retrieval is pure-Python — pandas/scikit-learn are used only at build time.
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Quickstart](#-quickstart)
+- [Configuration](#-configuration)
+- [API](#-api)
+- [Deploy your own](#-deploy-your-own)
+- [Testing](#-testing)
+- [Project structure](#-project-structure)
+- [Tech stack](#-tech-stack)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## Architecture
+## ✦ Features
 
-The browser loads a static single-page app from the Vercel edge; `/api/*`
-requests hit one FastAPI serverless function that runs the GraphRAG engine and
-calls Groq, with a deterministic extractive fallback.
+| | |
+| --- | --- |
+| **Graph + retrieval, combined** | A NetworkX knowledge graph supplies structured relationships; a TF-IDF retriever supplies the relevant evidence text. Both feed the answer. |
+| **Answer traceability** | Every answer ships with the subgraph of evidence used to ground it, plus the retrieved chunks and their similarity scores. |
+| **Works with or without an LLM** | With a `GROQ_API_KEY`, answers are generated by a Groq-hosted model. Without one — or on error — a deterministic extractive engine produces a grounded answer. |
+| **Vercel-native** | A lean FastAPI serverless function + a static single-page frontend. No database, no model server, fast cold starts. |
+| **Lean runtime** | Data loads from a committed JSON snapshot and retrieval is pure-Python — pandas / scikit-learn run only at build time. |
+| **Tested & typed** | Pydantic-typed API, a pytest suite covering the engine and every endpoint, and CI on every push. |
 
-<p align="center">
+---
+
+## ⛯ Architecture
+
+The browser loads a static single-page app from the Vercel edge; `/api/*` requests
+hit one FastAPI serverless function that runs the GraphRAG engine and calls Groq,
+with a deterministic extractive fallback.
+
+<div align="center">
   <img src="assets/architecture.svg" alt="Deployment architecture: browser → Vercel edge (static SPA + /api function) → FastAPI → graphrag engine → Groq, with extractive fallback" width="100%">
-</p>
+</div>
 
 ### How a question is answered
 
-A question fans out to TF-IDF retrieval and the knowledge graph in parallel;
-their context is fused and sent to the model (or the extractive fallback) to
-produce a grounded answer plus the evidence and traceability graph behind it.
+A question fans out to TF-IDF retrieval and the knowledge graph in parallel; their
+context is fused and sent to the model (or the extractive fallback) to produce a
+grounded answer plus the evidence and traceability graph behind it.
 
-<p align="center">
+<div align="center">
   <img src="assets/pipeline.svg" alt="Answer pipeline: question → TF-IDF retrieval + knowledge graph → context fusion → Groq or extractive → grounded answer with traceability graph" width="100%">
-</p>
+</div>
 
 ### Lean by design
 
@@ -63,23 +106,31 @@ produce a committed JSON snapshot. The deployed function loads that snapshot wit
 the standard library and retrieves with a pure-Python index — so the serverless
 bundle stays small and cold starts stay fast.
 
-<p align="center">
+<div align="center">
   <img src="assets/data-pipeline.svg" alt="Build-time vs runtime: Excel → prepare_data.py (pandas) → dataset.json at build time; stdlib loader + pure-Python TF-IDF + networkx + groq at runtime" width="100%">
-</p>
+</div>
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design rationale.
+> See **[ARCHITECTURE.md](ARCHITECTURE.md)** for the full design rationale and component breakdown.
 
 ---
 
-## Run locally
+## ⚡ Quickstart
+
+**Requirements:** Python 3.10+
 
 ```bash
+# 1. Clone
+git clone https://github.com/VikramKavuri/healthcare-graphrag.git
+cd healthcare-graphrag
+
+# 2. Install
 python -m venv .venv
 # Windows: .venv\Scripts\activate   |   macOS/Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
 
+# 3. Run
 uvicorn graphrag.app:app --reload
-# open http://127.0.0.1:8000
+# open http://127.0.0.1:8000   ·   interactive API docs at /docs
 ```
 
 The committed `graphrag/dataset.json` means the app runs immediately. To
@@ -96,50 +147,27 @@ cp .env.example .env        # then set GROQ_API_KEY=...
 ```
 
 Without a key the app runs on the extractive engine. With one, answers are
-generated by a Groq-hosted model and the fallback only triggers on error.
-The key is read from the environment only — never commit it (`.env` is
-git-ignored).
+generated by a Groq-hosted model and the fallback only triggers on error. The key
+is read from the environment only — never commit it (`.env` is git-ignored).
 
 ---
 
-## Deploy to Vercel
+## ⚙ Configuration
 
-The project is configured for Vercel's Python runtime out of the box
-([vercel.json](vercel.json)).
+All settings are environment variables with safe defaults. Set them in a local
+`.env` file or, in production, in your Vercel project's environment variables.
 
-**Option A — CLI**
-
-```bash
-npm i -g vercel
-vercel            # first deploy (preview)
-vercel --prod     # production
-```
-
-**Option B — Dashboard**
-
-1. Push this folder to a Git repository and **Import Project** on
-   [vercel.com](https://vercel.com).
-2. Framework preset: **Other** (no build step required).
-3. Deploy.
-
-**Configure the LLM** in *Project Settings → Environment Variables* (add the key
-here only — never in the repo):
-
-| Variable          | Required | Default                    | Purpose                            |
-| ----------------- | -------- | -------------------------- | ---------------------------------- |
-| `GROQ_API_KEY`    | for LLM  | —                          | Enables Groq-generated answers     |
-| `LLM_MODEL`       | no       | `llama-3.3-70b-versatile`  | Override the Groq model            |
-| `LLM_MAX_TOKENS`  | no       | `1024`                     | Max answer length                  |
-| `LLM_TEMPERATURE` | no       | `0.1`                      | Sampling temperature               |
-| `RETRIEVAL_TOP_K` | no       | `8`                        | Default chunks retrieved per query |
-
-The static frontend is served by Vercel's CDN; `/api/*` is handled by the
-serverless function. If `GROQ_API_KEY` is unset, the deployed demo still works —
-it serves extractive answers.
+| Variable          | Required | Default                   | Purpose                              |
+| ----------------- | -------- | ------------------------- | ------------------------------------ |
+| `GROQ_API_KEY`    | for LLM  | —                         | Enables Groq-generated answers       |
+| `LLM_MODEL`       | no       | `llama-3.3-70b-versatile` | Override the Groq model              |
+| `LLM_MAX_TOKENS`  | no       | `1024`                    | Max answer length                    |
+| `LLM_TEMPERATURE` | no       | `0.1`                     | Sampling temperature                 |
+| `RETRIEVAL_TOP_K` | no       | `8`                       | Default chunks retrieved per query   |
 
 ---
 
-## API
+## ⇄ API
 
 | Method | Path                  | Description                                        |
 | ------ | --------------------- | ------------------------------------------------- |
@@ -151,40 +179,64 @@ it serves extractive answers.
 | `GET`  | `/api/tables/{name}`  | Raw table rows                                    |
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/ask \
+curl -X POST https://healthcare-graphrag.vercel.app/api/ask \
   -H "Content-Type: application/json" \
   -d '{"question":"Which goals are at risk?","patient_id":"P001","top_k":6}'
 ```
 
-Interactive docs are available at `/docs` when running locally.
+Interactive OpenAPI docs are available at `/docs`.
 
 ---
 
-## Testing
+## ▲ Deploy your own
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FVikramKavuri%2Fhealthcare-graphrag)
+
+The project is configured for Vercel's Python runtime out of the box
+([vercel.json](vercel.json)) — a `@vercel/python` function for the API and static
+hosting for the frontend.
+
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+Then (optional) add `GROQ_API_KEY` in **Project Settings → Environment Variables**
+to upgrade from extractive answers to LLM-generated answers. If it's unset, the
+deployed demo still works — it serves extractive answers.
+
+---
+
+## ✓ Testing
 
 ```bash
 pip install -r requirements-dev.txt
 pytest
 ```
 
+The suite covers the dataset loader, graph construction, retrieval ranking,
+reasoning subgraphs, the extractive/LLM answer paths, and every API endpoint. CI
+runs it on every push and pull request.
+
 ---
 
-## Project structure
+## ▦ Project structure
 
-```
+```text
 api/index.py            Vercel serverless entry (exports the ASGI app)
 graphrag/               GraphRAG engine
-  ├─ app.py             FastAPI routes
-  ├─ config.py          environment-driven settings
-  ├─ dataset.py         JSON snapshot loader
-  ├─ graph.py           knowledge-graph construction + traversal
-  ├─ retrieval.py       pure-Python TF-IDF retriever
-  ├─ reasoning.py       answer-traceability subgraph selection
-  ├─ llm.py             Groq client + extractive fallback
-  ├─ viz.py             vis-network serialization + node styling
-  ├─ schemas.py         Pydantic request/response models
-  └─ dataset.json       committed runtime data snapshot
+├─ app.py               FastAPI routes
+├─ config.py            environment-driven settings
+├─ dataset.py           JSON snapshot loader
+├─ graph.py             knowledge-graph construction + traversal
+├─ retrieval.py         pure-Python TF-IDF retriever
+├─ reasoning.py         answer-traceability subgraph selection
+├─ llm.py               Groq client + extractive fallback
+├─ viz.py               vis-network serialization + node styling
+├─ schemas.py           Pydantic request/response models
+└─ dataset.json         committed runtime data snapshot
 public/                 static single-page frontend
+assets/                 animated architecture diagrams (SVG)
 scripts/prepare_data.py Excel → dataset.json (build-time only)
 tests/                  pytest suite
 data/                   source spreadsheets + data dictionary
@@ -192,6 +244,29 @@ data/                   source spreadsheets + data dictionary
 
 ---
 
-## License
+## ❖ Tech stack
 
-[MIT](LICENSE).
+**Backend** — Python · FastAPI · NetworkX · pure-Python TF-IDF · Groq SDK
+**Frontend** — vanilla JS · [vis-network](https://visjs.github.io/vis-network/) · zero build step
+**Infra** — Vercel (serverless Python + static CDN)
+**Quality** — Pydantic · pytest · Ruff · GitHub Actions CI
+
+---
+
+## ⤳ Contributing
+
+Contributions are welcome — see **[CONTRIBUTING.md](CONTRIBUTING.md)** for the
+development workflow, coding standards, and how to run the checks.
+
+---
+
+## ⚖ License
+
+Released under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+  <sub>Synthetic data only · decision-support tooling, not medical advice · built by
+  <a href="https://github.com/VikramKavuri">VikramKavuri</a></sub>
+</div>

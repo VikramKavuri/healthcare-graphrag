@@ -11,11 +11,10 @@ from __future__ import annotations
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List
 
-Row = Dict[str, object]
-Table = List[Row]
-Dataset = Dict[str, Table]
+Row = dict[str, object]
+Table = list[Row]
+Dataset = dict[str, Table]
 
 DATASET_PATH = Path(__file__).resolve().parent / "dataset.json"
 

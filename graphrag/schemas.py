@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
-
 from pydantic import BaseModel, Field
 
 
@@ -41,16 +39,16 @@ class GraphEdge(BaseModel):
 
 
 class Graph(BaseModel):
-    nodes: List[GraphNode]
-    edges: List[GraphEdge]
+    nodes: list[GraphNode]
+    edges: list[GraphEdge]
 
 
 class AskResponse(BaseModel):
     answer: str
     mode: str = Field(..., description="'llm' or 'extractive'.")
-    llm_error: Optional[str] = None
-    graph_facts: List[str]
-    evidence: List[Dict[str, object]]
+    llm_error: str | None = None
+    graph_facts: list[str]
+    evidence: list[dict[str, object]]
     reasoning_graph: Graph
 
 
@@ -67,6 +65,6 @@ class Meta(BaseModel):
     llm_enabled: bool
     model: str
     metrics: Metrics
-    suggested_questions: List[str]
-    legend: List[Dict[str, object]]
-    tables: List[str]
+    suggested_questions: list[str]
+    legend: list[dict[str, object]]
+    tables: list[str]

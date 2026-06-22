@@ -9,8 +9,6 @@ returns a useful, grounded response.
 
 from __future__ import annotations
 
-from typing import List, Optional, Tuple
-
 from .config import settings
 from .dataset import Row
 
@@ -32,9 +30,9 @@ _ANSWER_TEMPLATE = (
 )
 
 
-def build_context(graph_facts: List[str], chunks: List[Row]) -> str:
+def build_context(graph_facts: list[str], chunks: list[Row]) -> str:
     """Assemble the retrieval context string passed to the model."""
-    parts: List[str] = []
+    parts: list[str] = []
     if graph_facts:
         parts.append("GRAPH FACTS:\n" + "\n".join(graph_facts))
     if chunks:
@@ -48,7 +46,7 @@ def build_context(graph_facts: List[str], chunks: List[Row]) -> str:
     return "\n\n".join(parts)
 
 
-def generate_answer(question: str, context: str) -> Tuple[Optional[str], Optional[str]]:
+def generate_answer(question: str, context: str) -> tuple[str | None, str | None]:
     """Generate an answer with a Groq-hosted model.
 
     Returns ``(answer, None)`` on success, ``(None, reason)`` if no key is
@@ -86,14 +84,14 @@ def generate_answer(question: str, context: str) -> Tuple[Optional[str], Optiona
 
 def extractive_answer(
     question: str,
-    graph_facts: List[str],
-    chunks: List[Row],
-    insights: List[Row],
+    graph_facts: list[str],
+    chunks: list[Row],
+    insights: list[Row],
     patient_id: str,
     llm_error: str = "",
 ) -> str:
     """Assemble a deterministic, grounded answer directly from the evidence."""
-    lines: List[str] = ["### Direct Answer"]
+    lines: list[str] = ["### Direct Answer"]
     lines.append(
         "This answer was assembled by the extractive GraphRAG engine "
         "(no language model was used)."

@@ -9,7 +9,6 @@ handles only ``/api/*``.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -82,8 +81,8 @@ def create_app() -> FastAPI:
             tables=list(TABLE_NAMES),
         )
 
-    @app.get("/api/patients", response_model=List[Patient])
-    def patients() -> List[Patient]:
+    @app.get("/api/patients", response_model=list[Patient])
+    def patients() -> list[Patient]:
         result = []
         for row in get_table("patients"):
             first = str(row.get("first_name") or "").strip()

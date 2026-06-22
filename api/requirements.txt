@@ -1,0 +1,6 @@
+# Runtime dependencies for the Vercel @vercel/python build.
+# @vercel/python installs the requirements.txt located next to the function
+# entrypoint, so this mirrors the project-root requirements.txt.
+fastapi>=0.110.0
+groq>=0.11.0
+networkx>=3.0

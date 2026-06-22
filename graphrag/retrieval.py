@@ -12,7 +12,6 @@ import math
 import re
 from collections import Counter
 from functools import lru_cache
-from typing import Dict, List
 
 from .dataset import Row, get_table
 
@@ -25,17 +24,17 @@ _STOP_WORDS = frozenset(
 )
 
 
-def _tokenize(text: str) -> List[str]:
+def _tokenize(text: str) -> list[str]:
     return [t for t in _TOKEN_RE.findall(text.lower()) if t not in _STOP_WORDS and len(t) > 1]
 
 
 class TfidfIndex:
     """A TF-IDF index over a list of chunk rows, with cosine-similarity search."""
 
-    def __init__(self, chunks: List[Row]):
+    def __init__(self, chunks: list[Row]):
         self.chunks = chunks
-        self._idf: Dict[str, float] = {}
-        self._vectors: List[Dict[str, float]] = []
+        self._idf: dict[str, float] = {}
+        self._vectors: list[dict[str, float]] = []
         self._build()
 
     @staticmethod
@@ -67,7 +66,7 @@ class TfidfIndex:
         for tokens in doc_tokens:
             self._vectors.append(self._vectorize(tokens))
 
-    def _vectorize(self, tokens: List[str]) -> Dict[str, float]:
+    def _vectorize(self, tokens: list[str]) -> dict[str, float]:
         if not tokens:
             return {}
         counts = Counter(tokens)
@@ -79,7 +78,7 @@ class TfidfIndex:
 
     def search(
         self, question: str, patient_id: str = "all", top_k: int = 8
-    ) -> List[Row]:
+    ) -> list[Row]:
         """Return the ``top_k`` most relevant chunks, optionally scoped to a patient."""
         if not self._vectors:
             return []
@@ -96,7 +95,7 @@ class TfidfIndex:
                 if str(self.chunks[i].get("patient_id", "")) == str(patient_id)
             ]
 
-        scored: List[tuple[float, int]] = []
+        scored: list[tuple[float, int]] = []
         for i in candidates:
             doc_vector = self._vectors[i]
             if not doc_vector:
@@ -109,7 +108,7 @@ class TfidfIndex:
 
         scored.sort(key=lambda pair: pair[0], reverse=True)
 
-        results: List[Row] = []
+        results: list[Row] = []
         for score, i in scored[:top_k]:
             chunk = dict(self.chunks[i])
             chunk["similarity_score"] = round(score, 4)

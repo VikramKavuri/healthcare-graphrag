@@ -6,12 +6,10 @@ the backend remains the single source of truth for the visual language.
 
 from __future__ import annotations
 
-from typing import Dict, List, Set
-
 import networkx as nx
 
 # Visual style per node type: colour, shape, and relative size.
-NODE_STYLE: Dict[str, Dict[str, object]] = {
+NODE_STYLE: dict[str, dict[str, object]] = {
     "Patient": {"color": "#2B6CB0", "shape": "dot", "size": 28},
     "Goal": {"color": "#38A169", "shape": "box", "size": 22},
     "Barrier": {"color": "#E53E3E", "shape": "diamond", "size": 22},
@@ -65,7 +63,7 @@ def _short_label(node_id: str, attrs: dict) -> str:
     return f"{title}\n{subtitle or node_id}"
 
 
-def serialize_subgraph(graph: nx.MultiDiGraph, nodes: Set[str]) -> Dict[str, List[dict]]:
+def serialize_subgraph(graph: nx.MultiDiGraph, nodes: set[str]) -> dict[str, list[dict]]:
     """Return ``{"nodes": [...], "edges": [...]}`` for the given node set."""
     if not nodes:
         return {"nodes": [], "edges": []}

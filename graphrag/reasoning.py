@@ -8,8 +8,6 @@ the "Answer Traceability Graph" shown alongside each answer.
 
 from __future__ import annotations
 
-from typing import List, Set
-
 import networkx as nx
 
 from .dataset import Dataset, Row
@@ -18,9 +16,9 @@ from .dataset import Dataset, Row
 _CORE_LABELS = {"Goal", "Barrier", "Intervention", "SupportPlan", "IncidentRisk"}
 
 
-def map_chunks_to_nodes(chunks: List[Row], tables: Dataset) -> Set[str]:
+def map_chunks_to_nodes(chunks: list[Row], tables: Dataset) -> set[str]:
     """Map retrieved document chunks back to the graph nodes they came from."""
-    nodes: Set[str] = set()
+    nodes: set[str] = set()
     if not chunks:
         return nodes
 
@@ -46,11 +44,11 @@ def map_chunks_to_nodes(chunks: List[Row], tables: Dataset) -> Set[str]:
 def reasoning_subgraph_nodes(
     graph: nx.MultiDiGraph,
     patient_id: str,
-    chunks: List[Row],
+    chunks: list[Row],
     tables: Dataset,
-) -> Set[str]:
+) -> set[str]:
     """Build the node set for the answer-traceability subgraph."""
-    nodes: Set[str] = set()
+    nodes: set[str] = set()
 
     if patient_id != "all" and patient_id in graph:
         nodes.add(patient_id)

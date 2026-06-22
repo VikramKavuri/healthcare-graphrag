@@ -8,8 +8,8 @@ graph-context retrieval and the answer-traceability visualisation.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from functools import lru_cache
-from typing import Iterable, List, Set
 
 import networkx as nx
 
@@ -247,7 +247,7 @@ def get_graph() -> nx.MultiDiGraph:
 
 def patient_graph_facts(
     graph: nx.MultiDiGraph, patient_id: str, max_items: int = 60
-) -> List[str]:
+) -> list[str]:
     """Collect compact, human-readable graph facts around a patient.
 
     These facts form the structured context passed to the language model.
@@ -255,7 +255,7 @@ def patient_graph_facts(
     if patient_id == "all" or patient_id not in graph:
         return []
 
-    facts: List[str] = []
+    facts: list[str] = []
 
     for _, dst, edge in graph.out_edges(patient_id, data=True):
         node = graph.nodes[dst]
@@ -291,13 +291,13 @@ def patient_graph_facts(
 
 def patient_subgraph_nodes(
     graph: nx.MultiDiGraph, patient_id: str, max_nodes: int = 120
-) -> Set[str]:
+) -> set[str]:
     """Return the node set for a patient's full two-hop neighbourhood."""
     if patient_id == "all" or patient_id not in graph:
         nodes = list(graph.nodes())
         return set(nodes[:max_nodes])
 
-    nodes: Set[str] = {patient_id}
+    nodes: set[str] = {patient_id}
     for _, dst in graph.out_edges(patient_id):
         nodes.add(dst)
     for node in list(nodes):
