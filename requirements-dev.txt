@@ -1,0 +1,13 @@
+# Development + tooling dependencies (not deployed to Vercel).
+-r requirements.txt
+
+# Local ASGI server
+uvicorn[standard]>=0.29.0
+
+# Data preparation (Excel -> dataset.json)
+pandas>=2.0.0
+openpyxl>=3.1.0
+
+# Testing
+pytest>=8.0.0
+httpx>=0.27.0

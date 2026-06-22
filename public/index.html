@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healthcare GraphRAG — Patient Progress & Bottleneck Intelligence</title>
+  <meta name="description" content="Graph-augmented retrieval over synthetic healthcare records: patient progress, bottlenecks, and answer traceability for care-team review." />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='8' r='4' fill='%232dd4bf'/%3E%3Ccircle cx='7' cy='23' r='3.2' fill='%2338bdf8'/%3E%3Ccircle cx='25' cy='23' r='3.2' fill='%2334d399'/%3E%3Cpath d='M16 8 L7 23 M16 8 L25 23' stroke='%23475569' stroke-width='1.5'/%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/vis-network@9.1.6/standalone/umd/vis-network.min.js"></script>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <header class="topbar reveal" style="--d:0">
+    <div class="brand">
+      <svg class="brand-glyph" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16 7 L8 24 M16 7 L24 24 M8 24 L24 24" />
+        <circle cx="16" cy="7" r="4.2" class="g-patient" />
+        <circle cx="8" cy="24" r="3.4" class="g-sky" />
+        <circle cx="24" cy="24" r="3.4" class="g-good" />
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">Healthcare<span class="brand-accent">GraphRAG</span></span>
+        <span class="brand-tagline" id="tagline">Patient Progress &amp; Bottleneck Intelligence</span>
+      </div>
+    </div>
+
+    <div class="topbar-meta">
+      <span class="chip chip-warn" title="All records are synthetic demo data.">
+        <span class="chip-dot"></span> Synthetic data · not medical advice
+      </span>
+      <span class="chip" id="engine-badge" title="Answer engine">
+        <span class="chip-dot" id="engine-dot"></span>
+        <span id="engine-label">Connecting…</span>
+      </span>
+    </div>
+  </header>
+
+  <section class="metrics reveal" style="--d:1" id="metrics">
+    <div class="metric"><span class="metric-value" data-metric="patients">—</span><span class="metric-label">Patients</span></div>
+    <div class="metric"><span class="metric-value" data-metric="graph_nodes">—</span><span class="metric-label">Graph nodes</span></div>
+    <div class="metric"><span class="metric-value" data-metric="graph_edges">—</span><span class="metric-label">Graph edges</span></div>
+    <div class="metric"><span class="metric-value" data-metric="document_chunks">—</span><span class="metric-label">Document chunks</span></div>
+  </section>
+
+  <main class="layout">
+    <aside class="sidebar reveal" style="--d:2">
+      <div class="panel">
+        <h2 class="panel-title">Cohort</h2>
+        <label class="field">
+          <span class="field-label">Patient</span>
+          <div class="select-wrap">
+            <select id="patient-select"></select>
+          </div>
+        </label>
+        <p class="patient-context" id="patient-context"></p>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Retrieval</h2>
+        <label class="field">
+          <span class="field-label">Document chunks <b id="topk-value">8</b></span>
+          <input type="range" id="topk" min="3" max="15" value="8" />
+        </label>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Suggested questions</h2>
+        <ul class="suggestions" id="suggestions"></ul>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Legend</h2>
+        <ul class="legend" id="legend"></ul>
+      </div>
+    </aside>
+
+    <section class="workspace reveal" style="--d:3">
+      <nav class="tabs" role="tablist">
+        <button class="tab is-active" data-tab="ask" role="tab">Ask GraphRAG</button>
+        <button class="tab" data-tab="graph" role="tab">Patient graph</button>
+        <button class="tab" data-tab="tables" role="tab">Data tables</button>
+        <span class="tab-indicator" id="tab-indicator"></span>
+      </nav>
+
+      <!-- Ask -->
+      <div class="tab-panel is-active" data-panel="ask">
+        <div class="ask-bar">
+          <textarea id="question" rows="2" placeholder="Ask about goals, barriers, interventions, incidents…"></textarea>
+          <button class="btn btn-primary" id="run-btn">
+            <span class="btn-label">Run GraphRAG</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div class="results" id="results" hidden>
+          <article class="answer-card">
+            <div class="answer-head">
+              <h3>Answer</h3>
+              <span class="chip" id="mode-badge"></span>
+            </div>
+            <div class="answer-body markdown" id="answer-body"></div>
+          </article>
+
+          <article class="graph-card">
+            <div class="card-head">
+              <h3>Answer traceability graph</h3>
+              <span class="card-sub">Evidence used to ground this answer</span>
+            </div>
+            <div class="graph-canvas" id="reasoning-graph"></div>
+          </article>
+
+          <article class="evidence-card">
+            <div class="card-head">
+              <h3>Retrieved evidence</h3>
+              <span class="card-sub" id="evidence-count"></span>
+            </div>
+            <div class="evidence-wrap" id="evidence"></div>
+          </article>
+        </div>
+
+        <div class="placeholder" id="ask-placeholder">
+          <div class="placeholder-glyph">◇</div>
+          <p>Select a patient, pick a question, and run the engine to see a grounded answer with its evidence graph.</p>
+        </div>
+      </div>
+
+      <!-- Graph -->
+      <div class="tab-panel" data-panel="graph">
+        <article class="graph-card full">
+          <div class="card-head">
+            <h3>Full patient knowledge graph</h3>
+            <span class="card-sub" id="graph-sub"></span>
+          </div>
+          <div class="graph-canvas tall" id="full-graph"></div>
+        </article>
+      </div>
+
+      <!-- Tables -->
+      <div class="tab-panel" data-panel="tables">
+        <div class="table-controls">
+          <label class="field inline">
+            <span class="field-label">Table</span>
+            <div class="select-wrap">
+              <select id="table-select"></select>
+            </div>
+          </label>
+        </div>
+        <div class="table-scroll" id="table-view"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer reveal" style="--d:4">
+    <span>Healthcare GraphRAG · graph-augmented retrieval over synthetic records</span>
+    <span class="footer-stack" id="footer-stack"></span>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Keep the serverless upload small and fast.
+
+# Virtual environments
+.venv/
+venv/
+.GraphRAG_venv/
+
+# Source spreadsheets are only needed to regenerate graphrag/dataset.json at
+# build time; the committed JSON snapshot is what the function loads at runtime.
+data/
+
+# Dev-only assets
+scripts/
+tests/
+requirements-dev.txt
+
+# Caches
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

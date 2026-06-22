@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.GraphRAG_venv/
+
+# Environment / secrets
+.env
+.env.local
+
+# Vercel
+.vercel/
+
+# Editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local dev artifacts
+.shots/
+.playwright-mcp/

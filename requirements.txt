@@ -1,0 +1,6 @@
+# Runtime dependencies for the Vercel serverless function.
+# Kept intentionally lean: data is loaded from a committed JSON snapshot and
+# retrieval is pure-Python, so pandas/scikit-learn are dev-only (see requirements-dev.txt).
+fastapi>=0.110.0
+groq>=0.11.0
+networkx>=3.0

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-label="Animated knowledge graph: a central Patient node linked by typed clinical relationships to Goal, Barrier, Intervention, Incident, Daily note, and Medication nodes, each with its own colour and shape.">
+  <defs>
+    <radialGradient id="k-bg" cx="50%" cy="44%" r="60%">
+      <stop offset="0" stop-color="#101826"/><stop offset="1" stop-color="#0b0f16"/>
+    </radialGradient>
+    <radialGradient id="k-ping" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#2B6CB0" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#2B6CB0" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="k-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#94a3b8" fill-opacity="0.06"/>
+    </pattern>
+    <style>
+      .edge{ stroke:#46577a; stroke-width:1.8; fill:none; stroke-dasharray:5 7; animation:k-flow 1.5s linear infinite; }
+      @keyframes k-flow{ to{ stroke-dashoffset:-24; } }
+      .nlbl{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#cbd5e1; font-size:11px; }
+      .wlbl{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#ffffff; font-size:11px; font-weight:600; }
+      .ttl{ font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif; fill:#e8eef5; font-weight:700; }
+      .cap{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#5b6776; letter-spacing:3px; }
+      .lg{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#9fb0c0; font-size:10.5px; }
+      .stroke{ stroke:#ffffff; stroke-opacity:.22; stroke-width:1.5; }
+    </style>
+  </defs>
+
+  <rect width="900" height="470" rx="18" fill="url(#k-bg)"/>
+  <rect width="900" height="470" rx="18" fill="url(#k-grid)"/>
+  <rect x="0.5" y="0.5" width="899" height="469" rx="18" fill="none" stroke="#1c2636"/>
+
+  <text class="ttl" x="40" y="42" font-size="19">Knowledge graph</text>
+  <text class="cap" x="40" y="63" font-size="11">PATIENT-CENTERED · TYPED RELATIONSHIPS</text>
+
+  <!-- edges -->
+  <line class="edge" x1="440" y1="225" x2="440" y2="75"   style="animation-delay:.05s"/>
+  <line class="edge" x1="440" y1="225" x2="569.9" y2="150" style="animation-delay:.12s"/>
+  <line class="edge" x1="440" y1="225" x2="569.9" y2="300" style="animation-delay:.19s"/>
+  <line class="edge" x1="440" y1="225" x2="440" y2="375"  style="animation-delay:.26s"/>
+  <line class="edge" x1="440" y1="225" x2="310.1" y2="300" style="animation-delay:.33s"/>
+  <line class="edge" x1="440" y1="225" x2="310.1" y2="150" style="animation-delay:.40s"/>
+
+  <!-- patient ping -->
+  <circle cx="440" cy="225" r="28" fill="url(#k-ping)">
+    <animate attributeName="r" values="28;64" dur="2.6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;0" dur="2.6s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- satellite nodes -->
+  <g class="node" style="animation-delay:.5s">
+    <ellipse class="stroke" cx="440" cy="75" rx="34" ry="21" fill="#718096"/>
+    <text class="nlbl" x="440" y="50" text-anchor="middle">Daily note</text>
+  </g>
+  <g class="node" style="animation-delay:.58s">
+    <polygon class="stroke" points="569.9,131 589.9,167 549.9,167" fill="#DD6B20"/>
+    <text class="nlbl" x="569.9" y="186" text-anchor="middle">Intervention</text>
+  </g>
+  <g class="node" style="animation-delay:.66s">
+    <polygon class="stroke" points="569.9,280 574.6,293.53 588.92,293.82 577.51,302.47 581.66,316.18 569.9,308 558.14,316.18 562.29,302.47 550.88,293.82 565.2,293.53" fill="#9B2C2C"/>
+    <text class="nlbl" x="569.9" y="334" text-anchor="middle">Incident</text>
+  </g>
+  <g class="node" style="animation-delay:.74s">
+    <ellipse class="stroke" cx="440" cy="375" rx="34" ry="21" fill="#319795"/>
+    <text class="nlbl" x="440" y="408" text-anchor="middle">Medication</text>
+  </g>
+  <g class="node" style="animation-delay:.82s">
+    <polygon class="stroke" points="310.1,278 332.1,300 310.1,322 288.1,300" fill="#E53E3E"/>
+    <text class="nlbl" x="310.1" y="338" text-anchor="middle">Barrier</text>
+  </g>
+  <g class="node" style="animation-delay:.90s">
+    <rect class="stroke" x="273.1" y="131" width="74" height="38" rx="8" fill="#38A169"/>
+    <text class="wlbl" x="310.1" y="154" text-anchor="middle">Goal</text>
+  </g>
+
+  <!-- patient core -->
+  <g class="node" style="animation-delay:.46s">
+    <circle cx="440" cy="225" r="28" fill="#2B6CB0" stroke="#ffffff" stroke-opacity="0.3" stroke-width="2"/>
+    <text class="wlbl" x="440" y="229" text-anchor="middle">Patient</text>
+    <animateTransform attributeName="transform" type="scale" additive="sum" values="1;1.05;1" dur="3s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- legend -->
+  <g transform="translate(0,448)">
+    <circle cx="50" cy="-3" r="6" fill="#2B6CB0"/><text class="lg" x="62" y="0">Patient</text>
+    <rect x="158" y="-9" width="12" height="12" rx="2" fill="#38A169"/><text class="lg" x="176" y="0">Goal</text>
+    <polygon points="262,-9 271,0 262,9 253,0" fill="#E53E3E"/><text class="lg" x="278" y="0">Barrier</text>
+    <polygon points="372,-9 381,9 363,9" fill="#DD6B20"/><text class="lg" x="388" y="0">Intervention</text>
+    <polygon points="512,-9 514.6,-1.5 522.5,-1.5 516,3 518.5,11 512,6 505.5,11 508,3 501.5,-1.5 509.4,-1.5" fill="#9B2C2C"/><text class="lg" x="528" y="0">Incident</text>
+    <ellipse cx="628" cy="-3" rx="9" ry="6" fill="#718096"/><text class="lg" x="642" y="0">Daily note</text>
+    <ellipse cx="748" cy="-3" rx="9" ry="6" fill="#319795"/><text class="lg" x="762" y="0">Medication</text>
+  </g>
+</svg>
