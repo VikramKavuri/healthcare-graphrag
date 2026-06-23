@@ -18,13 +18,13 @@ const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 /* ---------------- vis-network theme ---------------- */
 const VIS_OPTIONS = {
   nodes: {
-    font: { color: "#cbd5e1", size: 13, face: "JetBrains Mono", multi: false },
+    font: { color: "#13271f", size: 13, face: "JetBrains Mono", strokeWidth: 3, strokeColor: "#ffffff", multi: false },
     borderWidth: 1.5,
-    shadow: { enabled: true, color: "rgba(0,0,0,0.45)", size: 10, x: 0, y: 3 },
+    shadow: { enabled: true, color: "rgba(16,70,50,0.18)", size: 9, x: 0, y: 2 },
   },
   edges: {
-    color: { color: "rgba(148,163,184,0.30)", highlight: "#2dd4bf", hover: "#38bdf8" },
-    font: { color: "#5b6776", size: 9, strokeWidth: 0, face: "JetBrains Mono", align: "middle" },
+    color: { color: "#cdded6", highlight: "#0f9d6b", hover: "#2563eb" },
+    font: { color: "#7a8a83", size: 9, strokeWidth: 3, strokeColor: "#ffffff", face: "JetBrains Mono", align: "middle" },
     arrows: { to: { enabled: true, scaleFactor: 0.45 } },
     smooth: { enabled: true, type: "dynamic" },
     width: 1,
@@ -45,9 +45,9 @@ function toVisNodes(nodes) {
     size: n.size,
     color: {
       background: n.color,
-      border: "rgba(255,255,255,0.22)",
-      highlight: { background: n.color, border: "#ffffff" },
-      hover: { background: n.color, border: "#ffffff" },
+      border: "rgba(16,50,38,0.30)",
+      highlight: { background: n.color, border: "#13271f" },
+      hover: { background: n.color, border: "#13271f" },
     },
   }));
 }

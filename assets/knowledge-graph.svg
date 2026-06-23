@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-label="Animated knowledge graph: a central Patient node linked by typed clinical relationships to Goal, Barrier, Intervention, Incident, Daily note, and Medication nodes, each with its own colour and shape.">
   <defs>
     <radialGradient id="k-bg" cx="50%" cy="44%" r="60%">
-      <stop offset="0" stop-color="#101826"/><stop offset="1" stop-color="#0b0f16"/>
+      <stop offset="0" stop-color="#f7faf8"/><stop offset="1" stop-color="#f1f6f3"/>
     </radialGradient>
     <radialGradient id="k-ping" cx="50%" cy="50%" r="50%">
       <stop offset="0" stop-color="#2B6CB0" stop-opacity="0.5"/>
@@ -11,20 +11,20 @@
       <circle cx="1" cy="1" r="1" fill="#94a3b8" fill-opacity="0.06"/>
     </pattern>
     <style>
-      .edge{ stroke:#46577a; stroke-width:1.8; fill:none; stroke-dasharray:5 7; animation:k-flow 1.5s linear infinite; }
+      .edge{ stroke:#b3c4bc; stroke-width:1.8; fill:none; stroke-dasharray:5 7; animation:k-flow 1.5s linear infinite; }
       @keyframes k-flow{ to{ stroke-dashoffset:-24; } }
-      .nlbl{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#cbd5e1; font-size:11px; }
+      .nlbl{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#26392f; font-size:11px; }
       .wlbl{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#ffffff; font-size:11px; font-weight:600; }
-      .ttl{ font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif; fill:#e8eef5; font-weight:700; }
-      .cap{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#5b6776; letter-spacing:3px; }
-      .lg{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#9fb0c0; font-size:10.5px; }
-      .stroke{ stroke:#ffffff; stroke-opacity:.22; stroke-width:1.5; }
+      .ttl{ font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif; fill:#13271f; font-weight:700; }
+      .cap{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#7f9088; letter-spacing:3px; }
+      .lg{ font-family:ui-monospace,Menlo,Consolas,monospace; fill:#52655c; font-size:10.5px; }
+      .stroke{ stroke:#13271f; stroke-opacity:.18; stroke-width:1.5; }
     </style>
   </defs>
 
   <rect width="900" height="470" rx="18" fill="url(#k-bg)"/>
   <rect width="900" height="470" rx="18" fill="url(#k-grid)"/>
-  <rect x="0.5" y="0.5" width="899" height="469" rx="18" fill="none" stroke="#1c2636"/>
+  <rect x="0.5" y="0.5" width="899" height="469" rx="18" fill="none" stroke="#e2ebe7"/>
 
   <text class="ttl" x="40" y="42" font-size="19">Knowledge graph</text>
   <text class="cap" x="40" y="63" font-size="11">PATIENT-CENTERED · TYPED RELATIONSHIPS</text>
